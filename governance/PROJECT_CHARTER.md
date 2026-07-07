@@ -207,3 +207,21 @@ Failure is defined as:
 - Only learning without building
 - No production system after 26 weeks
 - No portfolio output
+
+## Timekeeping Rule
+
+Project Phoenix uses two separate tracking systems:
+
+1. Global Day Number
+- Used for journal entries
+- Starts from Day 1 and increases continuously across the whole project
+
+2. Sprint Task Number
+- Used for sprint planning and execution
+- Format: Sprint X · Task Y
+- Must not be mixed with the global day number
+
+Example:
+- Journal title: Day 5
+- Sprint label: Sprint 1 - AI Workspace Foundation
+- Task label: Task 3 - Real LLM Integration
