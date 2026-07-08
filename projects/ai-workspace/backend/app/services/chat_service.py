@@ -2,6 +2,7 @@ from openai import OpenAI
 
 from app.core.config import settings
 from app.core.prompts import SYSTEM_PROMPT
+from app.services.conversation_store import get_history, append_message
 
 client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
@@ -9,7 +10,7 @@ client = OpenAI(
 )
 
 
-def _call_model(model_name: str, message: str) -> str:
+def _call_model(model_name: str, message: str, history: list[dict[str, str]]) -> str:
     print(f"[DEBUG] Trying model: {model_name}")
 
     response = client.chat.completions.create(
@@ -20,6 +21,7 @@ def _call_model(model_name: str, message: str) -> str:
                 "role": "system",
                 "content": SYSTEM_PROMPT,
             },
+            *history,
             {
                 "role": "user",
                 "content": message,
@@ -32,24 +34,31 @@ def _call_model(model_name: str, message: str) -> str:
     return content
 
 
-def generate_reply(message: str) -> str:
+def generate_reply(session_id: str, message: str) -> str:
     if not message.strip():
         return "Message cannot be empty."
 
+    history = get_history(session_id)
     primary_model = settings.OPENAI_MODEL
     fallback_model = settings.OPENAI_FALLBACK_MODEL
     print(f"[DEBUG] Primary model from settings: {primary_model}")
     print(f"[DEBUG] Fallback model from settings: {fallback_model}")
 
     try:
-        return _call_model(primary_model, message)
+        reply = _call_model(primary_model, message, history)
+        append_message(session_id, "user", message)
+        append_message(session_id, "assistant", reply)
+        return reply
     except Exception as primary_error:
         print(f"[WARN] Primary model failed: {primary_model}")
         print(f"[WARN] Primary error: {primary_error}")
 
         if fallback_model:
             try:
-                return _call_model(fallback_model, message)
+                reply = _call_model(fallback_model, message, history)
+                append_message(session_id, "user", message)
+                append_message(session_id, "assistant", reply)
+                return reply
             except Exception as fallback_error:
                 print(f"[WARN] Fallback model failed: {fallback_model}")
                 print(f"[WARN] Fallback error: {fallback_error}")
