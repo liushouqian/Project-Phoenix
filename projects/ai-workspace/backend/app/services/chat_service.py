@@ -41,13 +41,17 @@ def generate_reply(session_id: str, message: str) -> str:
     history = get_history(session_id)
     primary_model = settings.OPENAI_MODEL
     fallback_model = settings.OPENAI_FALLBACK_MODEL
-    print(f"[DEBUG] Primary model from settings: {primary_model}")
-    print(f"[DEBUG] Fallback model from settings: {fallback_model}")
+
+    print("[DEBUG] incoming session_id:", session_id)
+    print("[DEBUG] incoming message:", message)
 
     try:
         reply = _call_model(primary_model, message, history)
         append_message(session_id, "user", message)
         append_message(session_id, "assistant", reply)
+
+        print("[DEBUG] history after:", get_history(session_id))
+
         return reply
     except Exception as primary_error:
         print(f"[WARN] Primary model failed: {primary_model}")

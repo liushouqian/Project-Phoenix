@@ -24,12 +24,12 @@ python -m uvicorn main:app --reload
 - [⎷] Chat API skeleton added
 - [ ] LLM integration
 - [ ] Tool calling
+- [x] Task 5 — Add session-based in-memory conversation history to `/chat`
+- Verified that the same session can remember user profile information across multiple turns.
 
 ## Current Progress Note
 
-- 使用 OpenRouter 时，`openrouter/free` 返回表现异常，改为具体免费模型后恢复正常
-- 当前可用模型：
-  - `meta-llama/llama-3.3-8b-instruct:free`
+- 全面更改模型为DeepSeek
 
 ## Run the backend
 

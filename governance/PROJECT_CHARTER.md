@@ -225,3 +225,10 @@ Example:
 - Journal title: Day 5
 - Sprint label: Sprint 1 - AI Workspace Foundation
 - Task label: Task 3 - Real LLM Integration
+
+## 技术原则: 聊天系统最小分层
+- schemas/: 定义请求和响应的数据结构
+- routes/: 处理HTTP层
+- services/: 处理业务逻辑、模型调用、上下文拼接
+- conversation_store/: 负责会话状态存取
+- core/config: 负责环境变量和模型配置
