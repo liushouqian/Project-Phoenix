@@ -13,3 +13,7 @@ def append_message(session_id: str, role: str, content: str) -> None:
       "content": content,
     }
   )
+
+def clear_history(session_id: str) -> None:
+  if session_id in conversation_store:
+    del conversation_store[session_id]
