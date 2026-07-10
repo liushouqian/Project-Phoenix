@@ -44,6 +44,7 @@ def generate_reply(session_id: str, message: str) -> str:
 
     print("[DEBUG] incoming session_id:", session_id)
     print("[DEBUG] incoming message:", message)
+    print("[DEBUG] history before:", history)
 
     try:
         reply = _call_model(primary_model, message, history)
@@ -62,6 +63,8 @@ def generate_reply(session_id: str, message: str) -> str:
                 reply = _call_model(fallback_model, message, history)
                 append_message(session_id, "user", message)
                 append_message(session_id, "assistant", reply)
+
+                print("[DEBUG] history after:", get_history(session_id))
                 return reply
             except Exception as fallback_error:
                 print(f"[WARN] Fallback model failed: {fallback_model}")
