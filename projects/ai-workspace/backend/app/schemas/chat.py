@@ -16,3 +16,12 @@ class ResetSessionRequest(BaseModel):
 
 class ResetSessionResponse(BaseModel):
   message: str
+
+
+class HistoryRequest(BaseModel):
+  session_id: str
+
+
+class HistoryResponse(BaseModel):
+  session_id: str
+  history: list[dict[str, str]]
