@@ -3,6 +3,24 @@ from pathlib import Path
 
 DB_PATH = Path("data/phoenix.db")
 
+def init_db():
+  DB_PATH.parent.mkdir(exist_ok=True)
+  conn = sqlite3.connect(DB_PATH)
+  cursor = conn.cursor()
+  cursor.execute(
+    """
+    CREATE TABLE IF NOT EXISTS conversation_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id TEXT NOT NULL,
+      role TEXT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """
+  )
+  conn.commit()
+  conn.close()
+
 def get_connection():
   return sqlite3.connect(DB_PATH)
 
@@ -41,7 +59,7 @@ def append_message(
   cursor = conn.cursor()
 
   cursor.execute(
-    f"""
+    """
     INSERT INTO conversation_messages
     (
       session_id,
@@ -73,26 +91,6 @@ def clear_history(session_id: str) -> None:
 
   conn.commit()
   conn.close()
-
-def init_db():
-  DB_PATH.parent.mkdir(exist_ok=True)
-  conn = sqlite3.connect(DB_PATH)
-  cursor = conn.cursor()
-  cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS conversation_messages (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      session_id TEXT NOT NULL,
-      role TEXT NOT NULL,
-      content TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """
-  )
-  conn.commit()
-  conn.close()
-
-conversation_store: dict[str, list[dict[str, str]]] = {}
 
 
 init_db()
