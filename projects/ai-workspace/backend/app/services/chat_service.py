@@ -2,7 +2,7 @@ from openai import OpenAI
 
 from app.core.config import settings
 from app.core.prompts import SYSTEM_PROMPT
-from app.services.conversation_store import get_history, append_message
+from app.services.conversation_store import get_recent_history, append_message
 
 client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
@@ -38,7 +38,7 @@ def generate_reply(session_id: str, message: str) -> str:
     if not message.strip():
         return "Message cannot be empty."
 
-    history = get_history(session_id)
+    history = get_recent_history(session_id, limit=10)
     primary_model = settings.OPENAI_MODEL
     fallback_model = settings.OPENAI_FALLBACK_MODEL
 
@@ -51,7 +51,7 @@ def generate_reply(session_id: str, message: str) -> str:
         append_message(session_id, "user", message)
         append_message(session_id, "assistant", reply)
 
-        print("[DEBUG] history after:", get_history(session_id))
+        print("[DEBUG] history after:", get_recent_history(session_id))
 
         return reply
     except Exception as primary_error:
@@ -64,7 +64,7 @@ def generate_reply(session_id: str, message: str) -> str:
                 append_message(session_id, "user", message)
                 append_message(session_id, "assistant", reply)
 
-                print("[DEBUG] history after:", get_history(session_id))
+                print("[DEBUG] history after:", get_recent_history(session_id))
                 return reply
             except Exception as fallback_error:
                 print(f"[WARN] Fallback model failed: {fallback_model}")

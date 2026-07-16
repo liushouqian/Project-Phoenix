@@ -92,5 +92,38 @@ def clear_history(session_id: str) -> None:
   conn.commit()
   conn.close()
 
+def get_recent_history(
+  session_id: str,
+  limit: int = 10
+) -> list[dict[str, str]]:
+  conn = get_connection()
+  cursor = conn.cursor()
+
+  cursor.execute(
+    """
+    SELECT role, content
+    FROM conversation_messages
+    WHERE session_id = ?
+    ORDER BY id DESC
+    LIMIT ?
+    """,
+    (session_id, limit),
+  )
+
+  rows = cursor.fetchall()
+
+  conn.close()
+
+  history = [
+    {
+      "role": role,
+      "content": content,
+    }
+    for role, content in rows
+  ]
+
+  history.reverse()
+
+  return history
 
 init_db()
