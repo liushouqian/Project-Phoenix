@@ -2,7 +2,7 @@ from openai import OpenAI
 
 from app.core.config import settings
 from app.core.prompts import SYSTEM_PROMPT
-from app.services.conversation_store import get_recent_history, append_message
+from app.services.conversation_manager import get_recent_history, append_message
 
 client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
