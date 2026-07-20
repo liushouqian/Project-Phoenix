@@ -1,8 +1,8 @@
 from openai import OpenAI
 
 from app.core.config import settings
-from app.core.prompts import SYSTEM_PROMPT
 from app.services.conversation_manager import get_recent_history, append_message
+from app.core.prompt_builder import build_messages
 
 client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
@@ -13,20 +13,15 @@ client = OpenAI(
 def _call_model(model_name: str, message: str, history: list[dict[str, str]]) -> str:
     print(f"[DEBUG] Trying model: {model_name}")
 
+    messages = build_messages(
+      history,
+      message,
+    )
+
     response = client.chat.completions.create(
         model=model_name,
         temperature=settings.OPENAI_TEMPERATURE,
-        messages=[
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT,
-            },
-            *history,
-            {
-                "role": "user",
-                "content": message,
-            },
-        ],
+        messages=messages,
     )
 
     content = response.choices[0].message.content or ""
