@@ -21,11 +21,18 @@ def _call_model(model_name: str, message: str, history: list[dict[str, str]]) ->
     response = client.chat.completions.create(
         model=model_name,
         temperature=settings.OPENAI_TEMPERATURE,
+        max_tokens=settings.OPENAI_MAX_TOKENS,
+        top_p=settings.OPENAI_TOP_P,
+        presence_penalty=settings.OPENAI_PRESENCE_PENALTY,
+        frequency_penalty=settings.OPENAI_FREQUENCY_PENALTY,
         messages=messages,
     )
 
     content = response.choices[0].message.content or ""
     print(f"[DEBUG] Model success: {model_name}")
+    print(f"[DEBUG] temperature: {settings.OPENAI_TEMPERATURE}")
+    print(f"[DEBUG] max_tokens: {settings.OPENAI_MAX_TOKENS}")
+    print(f"[DEBUG] top_p: {settings.OPENAI_TOP_P}")
     return content
 
 
