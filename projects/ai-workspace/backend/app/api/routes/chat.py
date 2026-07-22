@@ -7,23 +7,28 @@ from app.schemas.chat import (
   ResetSessionResponse,
   HistoryRequest,
   HistoryResponse,
+  ErrorResponse,
 )
 from app.services.chat_service import generate_reply
 from app.services.conversation_store import (
   clear_history,
   get_history,
 )
+from app.core.exceptions import LLMServiceError
 
 router = APIRouter()
 
 
-@router.post("/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse, responses={500: {"model": ErrorResponse}})
 def chat(request: ChatRequest):
-  reply = generate_reply(
-    session_id=request.session_id,
-    message=request.message
-  )
-  return ChatResponse(reply=reply)
+  try:
+    reply = generate_reply(
+      session_id=request.session_id,
+      message=request.message
+    )
+    return ChatResponse(reply=reply)
+  except LLMServiceError:
+    return {"error": "LLM request failed"}
 
 @router.post("/chat/reset", response_model=ResetSessionResponse)
 def reset_chat(request: ResetSessionRequest):

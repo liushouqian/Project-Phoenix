@@ -3,6 +3,7 @@ from openai import OpenAI
 from app.core.config import settings
 from app.services.conversation_manager import get_recent_history, append_message
 from app.core.prompt_builder import build_messages
+from app.core.exceptions import LLMServiceError
 
 client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
@@ -77,4 +78,4 @@ def generate_reply(session_id: str, message: str) -> str:
                     f"Fallback model ({fallback_model}): {fallback_error}"
                 )
 
-        return f"LLM request failed: {primary_error}"
+        raise LLMServiceError("Primary model failed")
