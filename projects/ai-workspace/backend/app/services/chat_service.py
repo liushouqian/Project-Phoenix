@@ -72,10 +72,6 @@ def generate_reply(session_id: str, message: str) -> str:
             except Exception as fallback_error:
                 print(f"[WARN] Fallback model failed: {fallback_model}")
                 print(f"[WARN] Fallback error: {fallback_error}")
-                return (
-                    "LLM request failed.\n"
-                    f"Primary model ({primary_model}): {primary_error}\n"
-                    f"Fallback model ({fallback_model}): {fallback_error}"
-                )
+                raise LLMServiceError("LLM request failed")
 
         raise LLMServiceError("Primary model failed")

@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
 from app.schemas.chat import (
   ChatRequest,
@@ -19,7 +20,15 @@ from app.core.exceptions import LLMServiceError
 router = APIRouter()
 
 
-@router.post("/chat", response_model=ChatResponse, responses={500: {"model": ErrorResponse}})
+@router.post(
+  "/chat",
+  response_model=ChatResponse,
+  responses={
+    500: {
+      "model": ErrorResponse
+    }
+  }
+)
 def chat(request: ChatRequest):
   try:
     reply = generate_reply(
@@ -28,7 +37,10 @@ def chat(request: ChatRequest):
     )
     return ChatResponse(reply=reply)
   except LLMServiceError:
-    return {"error": "LLM request failed"}
+    return JSONResponse(
+      status_code=500,
+      content={"error": "LLM request failed"}
+    )
 
 @router.post("/chat/reset", response_model=ResetSessionResponse)
 def reset_chat(request: ResetSessionRequest):
