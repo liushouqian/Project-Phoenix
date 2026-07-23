@@ -37,7 +37,7 @@ def _call_model(model_name: str, message: str, history: list[dict[str, str]]) ->
     return content
 
 
-def generate_reply(session_id: str, message: str) -> str:
+def generate_reply(session_id: str, message: str, metadata: dict[str, str] = {}) -> str:
     if not message.strip():
         return "Message cannot be empty."
 
@@ -45,6 +45,7 @@ def generate_reply(session_id: str, message: str) -> str:
     primary_model = settings.OPENAI_MODEL
     fallback_model = settings.OPENAI_FALLBACK_MODEL
 
+    print("[DEBUG] incoming metadata:", metadata)
     print("[DEBUG] incoming session_id:", session_id)
     print("[DEBUG] incoming message:", message)
     print("[DEBUG] history before:", history)

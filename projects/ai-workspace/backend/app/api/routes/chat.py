@@ -33,7 +33,8 @@ def chat(request: ChatRequest):
   try:
     reply = generate_reply(
       session_id=request.session_id,
-      message=request.message
+      message=request.message,
+      metadata=request.metadata
     )
     return ChatResponse(reply=reply)
   except LLMServiceError:
