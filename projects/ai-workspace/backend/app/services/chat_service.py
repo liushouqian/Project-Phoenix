@@ -5,6 +5,9 @@ from app.services.conversation_manager import get_recent_history, append_message
 from app.core.prompt_builder import build_messages
 from app.core.exceptions import LLMServiceError
 
+CONVERSATION_WINDOW = settings.CONVERSATION_WINDOW
+print("[DEBUG] conversation window:", CONVERSATION_WINDOW)
+
 client = OpenAI(
     api_key=settings.OPENAI_API_KEY,
     base_url=settings.OPENAI_BASE_URL,
@@ -41,7 +44,7 @@ def generate_reply(session_id: str, message: str, metadata: dict[str, str] = {})
     if not message.strip():
         return "Message cannot be empty."
 
-    history = get_recent_history(session_id, limit=10)
+    history = get_recent_history(session_id, limit=CONVERSATION_WINDOW)
     primary_model = settings.OPENAI_MODEL
     fallback_model = settings.OPENAI_FALLBACK_MODEL
 

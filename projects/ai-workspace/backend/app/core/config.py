@@ -14,6 +14,6 @@ class Settings:
   OPENAI_TOP_P: float = float(os.getenv("OPENAI_TOP_P", 1))
   OPENAI_PRESENCE_PENALTY: float = float(os.getenv("OPENAI_PRESENCE_PENALTY", 0))
   OPENAI_FREQUENCY_PENALTY: float = float(os.getenv("OPENAI_FREQUENCY_PENALTY", 0))
-
+  CONVERSATION_WINDOW: int = int(os.getenv("CONVERSATION_WINDOW", 10))
 
 settings = Settings()
